@@ -1,28 +1,29 @@
 @Entity()
 export class Book {
-    @PrimaryKey()
-    id!: number
 
-    @Property()
-    createdAt = new Date()
+  @PrimaryKey()
+  id!: number;
 
-    @Property({ onUpdate: () => new Date() })
-    updatedAt = new Date()
+  @Property()
+  createdAt = new Date();
 
-    @Property()
-    title!: string
+  @Property({ onUpdate: () => new Date() })
+  updatedAt = new Date();
 
-    @ManyToOne() // when you provide correct type hint, ORM will read it for you
-    author!: Author
+  @Property()
+  title!: string;
 
-    @ManyToOne(() => Publisher) // or you can specify the entity as class reference or string name
-    publisher?: Publisher
+  @ManyToOne() // when you provide correct type hint, ORM will read it for you
+  author!: Author;
 
-    @ManyToMany() // owning side can be simple as this!
-    tags = new Collection<BookTag>(this)
+  @ManyToOne(() => Publisher) // or you can specify the entity as class reference or string name
+  publisher?: Publisher;
 
-    constructor(title: string, author: Author) {
-        this.title = title
-        this.author = author
-    }
-}
+  @ManyToMany() // owning side can be simple as this!
+  tags = new Collection<BookTag>(this);
+
+  constructor(title: string, author: Author) {
+    this.title = title;
+    this.author = author;
+  }
+
