@@ -1,0 +1,71 @@
+Skip to content
+Search or jump to…
+
+Pull requests
+Issues
+Marketplace
+Explore
+ 
+@DeanDK 
+DeanDK
+/
+e-commerce
+1
+00
+Code
+Issues
+Pull requests
+4
+Actions
+Projects
+Wiki
+Security
+14
+Insights
+Settings
+e-commerce/.gitignore
+@buihuyhung
+buihuyhung Initial commit from Create React App
+Latest commit 61da263 on 7 May 2019
+ History
+ 1 contributor
+We found potential security vulnerabilities in your dependencies.
+Only the owner of this repository can see this message.
+
+23 lines (18 sloc)  310 Bytes
+  
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/coverage
+
+# production
+/build
+
+# misc
+.DS_Store
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+© 2020 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Help
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
