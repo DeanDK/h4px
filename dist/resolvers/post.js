@@ -23,7 +23,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PostResolver = void 0;
 const type_graphql_1 = require("type-graphql");
-const Post_1 = require("src/entities/Post");
+const Post_1 = require("./../entities/Post");
 let PostResolver = class PostResolver {
     posts({ em }) {
         return em.find(Post_1.Post, {});

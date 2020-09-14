@@ -5,7 +5,7 @@ import { ObjectType, Field, Int } from 'type-graphql'
 @ObjectType()
 @Entity()
 export class User {
-    @Field(() => Int)
+    @Field()
     @PrimaryKey()
     id!: number
 
@@ -21,6 +21,6 @@ export class User {
     @Property({ type: 'text', unique: true })
     username!: string
 
-    @Property({ type: 'text')
+    @Property({ type: 'text' })
     password!: string
 }
