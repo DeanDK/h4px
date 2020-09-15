@@ -19,7 +19,7 @@ let User = class User {
     }
 };
 __decorate([
-    type_graphql_1.Field(() => type_graphql_1.Int),
+    type_graphql_1.Field(),
     core_1.PrimaryKey(),
     __metadata("design:type", Number)
 ], User.prototype, "id", void 0);
