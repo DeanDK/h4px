@@ -1,3 +1,5 @@
+import { validateRegister } from './../util/validateRegister'
+import { COOKIE_NAME } from './../constants'
 import {
     Resolver,
     Ctx,
@@ -12,14 +14,8 @@ import { MyContext } from './../types'
 import { User } from './../entities/User'
 import argon2 from 'argon2'
 import { EntityManager } from '@mikro-orm/postgresql'
-
-@InputType()
-class UsernamePasswordInput {
-    @Field()
-    username: string
-    @Field()
-    password: string
-}
+import { Post } from 'src/entities/Post'
+import { UsernamePasswordInput } from './UsernamePasswordInput'
 
 @ObjectType()
 class FieldError {
@@ -41,6 +37,15 @@ class UserResponse {
 
 @Resolver()
 export class UserResolver {
+    /* @Mutation(() => Boolean)
+    async forgotPassword(
+        @Arg('email') email: string,
+        @Ctx() { em }: MyContext
+    ) {
+        // const user = await em.findOne(Post, { email })
+        return true
+    }
+ */
     @Query(() => User, { nullable: true })
     async me(@Ctx() { req, em }: MyContext) {
         if (!req.session!.userId) {
@@ -56,29 +61,14 @@ export class UserResolver {
         @Arg('options') options: UsernamePasswordInput,
         @Ctx() { em, req }: MyContext
     ): Promise<UserResponse> {
-        if (options.username.length <= 2) {
-            return {
-                errors: [
-                    {
-                        field: 'username',
-                        message: 'length must be greater than 2',
-                    },
-                ],
-            }
-        }
+        const errors = validateRegister(options)
 
-        if (options.password.length <= 3) {
-            return {
-                errors: [
-                    {
-                        field: 'password',
-                        message: 'length must be greater than 3',
-                    },
-                ],
-            }
+        if (errors) {
+            return { errors }
         }
 
         const hashedPassword = await argon2.hash(options.password)
+
         let user
         try {
             const result = await (em as EntityManager)
@@ -87,6 +77,7 @@ export class UserResolver {
                 .insert({
                     username: options.username,
                     password: hashedPassword,
+                    email: options.email,
                     created_at: new Date(),
                     updated_at: new Date(),
                 })
@@ -115,12 +106,17 @@ export class UserResolver {
 
     @Mutation(() => UserResponse)
     async login(
-        @Arg('options') options: UsernamePasswordInput,
+        @Arg('usernameOrEmail') usernameOrEmail: string,
+        @Arg('password') password: string,
         @Ctx() { em, req }: MyContext
     ): Promise<UserResponse> {
-        const user = await em.findOne(User, {
-            username: options.username,
-        })
+        const user = await em.findOne(
+            User,
+            usernameOrEmail.includes('@')
+                ? { email: usernameOrEmail }
+                : { username: usernameOrEmail }
+        )
+
         if (!user) {
             return {
                 errors: [
@@ -131,7 +127,8 @@ export class UserResolver {
                 ],
             }
         }
-        const valid = await argon2.verify(user.password, options.password)
+
+        const valid = await argon2.verify(user.password, password)
         if (!valid) {
             return {
                 errors: [
@@ -153,7 +150,7 @@ export class UserResolver {
     async logout(@Ctx() { req, res }: MyContext) {
         return new Promise((resolve) =>
             req!.session!.destroy((err) => {
-                res.clearCookie('qid')
+                res.clearCookie(COOKIE_NAME)
                 if (err) {
                     resolve(false)
                     return
